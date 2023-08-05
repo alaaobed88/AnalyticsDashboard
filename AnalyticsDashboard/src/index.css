@@ -1,0 +1,7 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
+html,body,#root,.app{
+  font-family: "Inter",sans-serif;
+  height:100%;
+  width: 100%;
+  background-color: #1f2026;
+}
