@@ -53,9 +53,11 @@ const Dashboard = () => {
   return (
     <Box
       width="100%"
+      height="1200px"
       display="grid"
       gap="1.5rem"
       paddingBottom="1.5rem"
+      marginBottom="1rem"
       sx={
         isAboveMediumScreens
           ? {
