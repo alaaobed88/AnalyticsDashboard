@@ -5,7 +5,9 @@ import cors from "cors";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import morgan from "morgan";
-import kpiRoutes  from "./routes/kpi.js";
+import kpiRoutes from "./routes/kpi.js";
+import  kpis  from "./data/data.js";
+import KPI from "./models/KPI.js";
 /*Configurations*/
 
 dotenv.config();
@@ -18,6 +20,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
+/*Routes*/
+
+app.use("/kpi", kpiRoutes);
+
 /*MONGOOSE SETUP*/
 
 const MONGO_URL =
@@ -29,9 +35,11 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => {
+  .then(async () => {
     console.log("Connected to MongoDB!");
     app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
+    //await mongoose.connection.db.dropDatabase();
+    //KPI.insertMany(kpis);
   })
   .catch((error) => {
     console.error("Error connecting to MongoDB:", error);

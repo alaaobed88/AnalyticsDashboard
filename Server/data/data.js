@@ -4016,3 +4016,5 @@ export const transactions = [
     productIds: ["63bf7ac9f032394f5f002437"],
   },
 ];
+
+export default kpis;
