@@ -84,8 +84,7 @@ const Row3 = () => {
         (params.value as Array<string>).length,
     },
   ];
-  console.log(transactionData);
-  
+
   return (
     <>
       <DashboardBox gridArea="g">
