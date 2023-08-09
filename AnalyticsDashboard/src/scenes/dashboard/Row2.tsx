@@ -26,7 +26,6 @@ const pieData = [
 ];
 
 const Row2 = () => {
-  
   const { palette } = useTheme();
   const pieColors = [palette.primary[800], palette.primary[300]];
   const { data: operationalData } = useGetKpisQuery();
@@ -59,8 +58,6 @@ const Row2 = () => {
       })
     );
   }, [productData]);
-
-  console.log(productExpenseData);
 
   return (
     <>
