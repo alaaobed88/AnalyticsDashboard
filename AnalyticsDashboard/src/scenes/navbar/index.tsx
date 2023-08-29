@@ -1,15 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import PixIcon from "@mui/icons-material/Pix";
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme, Button } from "@mui/material";
 import FlexBetween from "@/components/FlexBetween";
-
-
+import { getAuth, signOut } from "firebase/auth";
 
 const Navbar = () => {
   const { palette } = useTheme();
-  const [selected, setselected] = useState("dashboard");
-
+  const [selected, setselected] = useState("");
+  const auth = getAuth();
   return (
     <FlexBetween mb="0.25rem" p="0.5rem 0rem" color={palette.grey[300]}>
       {/*Left Side*/}
@@ -46,6 +45,17 @@ const Navbar = () => {
             predictions
           </Link>
         </Box>
+
+        <Button
+          onClick={() => signOut(auth)}
+          sx={{
+            color: palette.grey[900],
+            backgroundColor: palette.grey[700],
+            boxShadow: "0.1rem 0.1rem 0.1rem 0.1rem rgba(0,0,0,0.4)",
+          }}
+        >
+          LogOut
+        </Button>
       </FlexBetween>
     </FlexBetween>
   );

@@ -1,32 +1,51 @@
+import React from "react";
 import { Box } from "@mui/material";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
-import { useMemo, Suspense } from "react";
+import { Suspense, useMemo } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { themeSettings } from "./theme";
-import Navbar from "@/scenes/navbar";
-import Dashboard from "@/scenes/dashboard";
 
-import { lazy } from "react";
+import { initializeApp } from "firebase/app";
+import { firebaseConfig } from "@/firebase/config";
 
-const LazyPredictions = lazy(() => import("./scenes/predictions"));
+import AuthRoute from "@/firebase/Auth";
+import Login from "@/firebase/login";
 
+initializeApp(firebaseConfig);
+// Lazy load the Dashboard component
+const Dashboard = React.lazy(() => import("./scenes/dashboard"));
+
+// Lazy load the Predictions component
+const Predictions = React.lazy(() => import("./scenes/predictions"));
 function App() {
   const theme = useMemo(() => createTheme(themeSettings), []);
   return (
     <div className="app">
       <BrowserRouter>
-        {/* for routing purposes*/}
         <ThemeProvider theme={theme}>
-          {/* to use pre defined mui theme*/}
-          <CssBaseline /> {/*change css to default*/}
+          <CssBaseline />
           <Box width="100%" height="100%" padding="1rem 2rem 4rem 2rem">
-            <Navbar />
-            <Suspense fallback={<div>Loading...</div>}>
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/predictions" element={<LazyPredictions />} />
-            </Routes>
+            <Suspense fallback={<Box color="white">loading...</Box>}>
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <AuthRoute>
+                      <Dashboard></Dashboard>
+                    </AuthRoute>
+                  }
+                />
+                <Route
+                  path="/predictions"
+                  element={
+                    <AuthRoute>
+                      <Predictions></Predictions>
+                    </AuthRoute>
+                  }
+                />
+                <Route path="/login" element={<Login />} />
+              </Routes>
             </Suspense>
           </Box>
         </ThemeProvider>

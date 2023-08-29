@@ -127,7 +127,9 @@ const Predictions = () => {
           </ResponsiveContainer>
         </>
       ) : (
-        <Box color="white" fontSize="1rem">Loading Your Data...</Box>
+        <Box color="white" fontSize="1rem">
+          Loading Your Data...
+        </Box>
       )}
     </DashBoardBox>
   );
