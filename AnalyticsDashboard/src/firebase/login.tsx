@@ -10,7 +10,7 @@ import {
   Box,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 export interface ILoginPageProps {}
 
@@ -20,34 +20,41 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const [authing, setAuthing] = useState(false);
+  const [triedLoggingIn, setTriedLoggingIn] = useState(false);
+  const [isValidEmail, setIsValidEmail] = useState(false);
+  const [isValidPassword, setIsValidPassword] = useState(false);
+  const [loginError, setLoginError] = useState("");
+  const [hidden, setHidden] = useState(true);
+  const validateEmail = (email: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const validatePassword = (password: string) => {
+    const uppercaseRegex = /[A-Z]/;
+    const lowercaseRegex = /[a-z]/;
+    const specialCharRegex = /[!@#$%^&*()_+{}[\]:;<>,.?~\\/-]/;
 
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+    const hasUppercase = uppercaseRegex.test(password);
+    const hasLowercase = lowercaseRegex.test(password);
+    const hasSpecialChar = specialCharRegex.test(password);
 
-  const validateInputs = () => {
-    let isValid = true;
+    return hasUppercase && hasLowercase && hasSpecialChar;
+  };
 
-    // Validate email
-    if (!email) {
-      setEmailError("Email is required");
-      isValid = false;
-    } else {
-      setEmailError("");
-    }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleEmailChange = (event: { target: { value: any } }) => {
+    const newEmail = event.target.value;
+    setEmail(newEmail);
+    setIsValidEmail(validateEmail(newEmail));
+  };
 
-    // Validate password
-    if (!password) {
-      setPasswordError("Password is required");
-      isValid = false;
-    } else {
-      setPasswordError("");
-    }
-
-    return isValid;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handlePasswordChange = (event: { target: { value: any } }) => {
+    const newPassword = event.target.value;
+    setPassword(newPassword);
+    setIsValidPassword(validatePassword(newPassword));
   };
 
   const signinWithEmailAndPassword = async () => {
-    if (validateInputs()) {
+    if (isValidEmail && isValidPassword) {
       setAuthing(true);
 
       signInWithEmailAndPassword(auth, email, password)
@@ -57,8 +64,12 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = () => {
         })
         .catch((error) => {
           console.log(error);
+          setLoginError("Please provide valid email and password!");
           setAuthing(false);
         });
+    } else if (!isValidEmail || !isValidPassword) {
+      setTriedLoggingIn(true);
+      setLoginError("Please provide valid email and password!");
     }
   };
 
@@ -86,40 +97,52 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = () => {
         <TextField
           variant="outlined"
           margin="normal"
+          sx={{
+            "& input": { color: "white" },
+            "& label": { color: "#12efc8" },
+          }}
           required
           fullWidth
           id="email"
           label="Email Address"
           name="email"
           autoComplete="email"
-          autoFocus
           value={email}
-          error={!!emailError}
-          helperText={emailError}
-          onChange={(e) => {
-            setEmail(e.target.value);
-            setEmailError(""); // Clear error when user types
-          }}
+          onChange={handleEmailChange}
         />
+        {!isValidEmail && triedLoggingIn && (
+          <Typography color="red">Invalid email format</Typography>
+        )}
         <TextField
           variant="outlined"
-          
           margin="normal"
           required
           fullWidth
+          sx={{
+            "& input": { color: "white" },
+            "& label": { color: "#12efc8" },
+          }}
           name="password"
           label="Password"
-          type="password"
+          type={hidden ? "password" : "text"}
           id="password"
           autoComplete="current-password"
           value={password}
-          error={!!passwordError}
-          helperText={passwordError}
-          onChange={(e) => {
-            setPassword(e.target.value);
-            setPasswordError(""); // Clear error when user types
-          }}
+          onChange={handlePasswordChange}
         />
+        <Button onClick={() => setHidden(!hidden)}>
+          <Avatar
+            sx={{
+              color: "white",
+              backgroundColor: (theme) => theme.palette.secondary.main,
+            }}
+          >
+            <VisibilityIcon />
+          </Avatar>
+        </Button>
+
+        <Typography marginTop="0.5rem" color="red">{loginError}</Typography>
+
         <Button
           type="submit"
           fullWidth
@@ -132,7 +155,7 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = () => {
           Sign In
         </Button>
         <Typography color="white">
-          Use Demo email: alaabed88@gmail.com password: 123456
+          Use Demo email: alaabed88@gmail.com <br /> password: Myp@ssword
         </Typography>
       </Box>
     </Container>
